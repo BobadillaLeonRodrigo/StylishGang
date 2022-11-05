@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import react from 'react';
+import { Routes, Route } from 'react-router';
+/* Importacion de los componetes de las paginas a llamar */
+import Ordenes from './components/paginas/Ordenes';
+import Tienda from './components/paginas/Tienda';
+import NuevoArticulo from './components/paginas/NuevoArticulo';
+import Sidebar from './components/ui/Sidebar';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Sidebar />
+      <Routes>
+        <Route path="/" element={<Ordenes/>}/>
+        <Route path="/Tienda" element={<Tienda/>}/>
+        <Route path="/Nuevo-Articulo" element={<NuevoArticulo/>}/>
+      </Routes>
     </div>
   );
 }
