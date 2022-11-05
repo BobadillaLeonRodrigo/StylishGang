@@ -8,13 +8,15 @@ import Sidebar from './components/ui/Sidebar';
 
 function App() {
   return (
-    <div>
+    <div className="md:flex min-h-screen">
       <Sidebar />
-      <Routes>
-        <Route path="/" element={<Ordenes/>}/>
-        <Route path="/Tienda" element={<Tienda/>}/>
-        <Route path="/Nuevo-Articulo" element={<NuevoArticulo/>}/>
-      </Routes>
+      <div className="md:w-3/5 xl:w-4/5 p-6">
+        <Routes>
+          <Route path="/" element={<Ordenes />}/>
+          <Route path="/Tienda" element={<Tienda />}/>
+          <Route path="/nuevo-articulo" element={<NuevoArticulo />}/>
+        </Routes>
+      </div>
     </div>
   );
 }
