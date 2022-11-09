@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from 'yup'
-import firebase, { FirebaseContext, firebaseContext } from '../../firebase';
+import { FirebaseContext } from '../../firebase';
 
 const NuevoArticulo  = () => {
 //Context con las operaciones de firebase
-const {firebase} = useContext(FirebaseContext);
-console.log(firebase);
+const {firebase} = useContext(FirebaseContext)
 
 //Validación y leer datos del formulario
 
