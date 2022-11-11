@@ -2,11 +2,16 @@ import React, { useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from 'yup'
 import { FirebaseContext } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const NuevoArticulo  = () => {
 //Context con las operaciones de firebase
 const { firebase } = useContext(FirebaseContext)
-console.log(firebase);
+    // console.log(firebase); para visualizar si se hizo correctamente en la consola del navegador
+
+//Hook para redireccionar
+const navigate = useNavigate();
+
 //Validación y leer datos del formulario
 
 const formik = useFormik ({
@@ -19,19 +24,26 @@ const formik = useFormik ({
     },
     validationSchema: Yup.object({
         nombre: Yup.string()
-            .min(500,'El minimo de caracteres es al menos 500')
+            .min(3,'Los Articulos deben de tener al menos 3 caracteres')
             .required('Agrega un Nombre al Articulo'),
         precio: Yup.number()
-            .min(1,'Agrega al menus un número')
+            .min(1,'Agrega al menos un número')
             .required('Agrege un precio al Articulo'),
         categoria: Yup.string()
             .required('Agregar un Categoria del Articulo'),
         descripcion: Yup.string()
-            .min(1500,'El minimo de caracteres es al menos 1500')
-            .required('Agregar una Descripción del Articulo'),
+            .min(10,'La descripcion debe ser mas larga')
+            .required('La descripción es obligatoria'),
     }),
-    onSubmit: datos => {
-        console.log(datos);
+    onSubmit: articulos => {
+        try {
+            articulos.existencia = true;
+            firebase.db.collection('productos').add(articulos);
+            // en caso de que agregue correctamente vamos a redireccionar
+            navigate('/Tienda')
+        } catch (error) {
+            console.log(error);
+        }
     }
 })
 
