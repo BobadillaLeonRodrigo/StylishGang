@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router';
 
-import firebase, { FirebaseContext } from './firebase'
+import firebase, { FirebaseContext } from './firebase';
 
 /* Importacion de los componetes de las paginas a llamar */
 import Ordenes from './components/paginas/Ordenes';

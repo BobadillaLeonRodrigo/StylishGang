@@ -5,8 +5,8 @@ import { FirebaseContext } from '../../firebase';
 
 const NuevoArticulo  = () => {
 //Context con las operaciones de firebase
-const {firebase} = useContext(FirebaseContext)
-
+const { firebase } = useContext(FirebaseContext)
+console.log(firebase);
 //Validación y leer datos del formulario
 
 const formik = useFormik ({
