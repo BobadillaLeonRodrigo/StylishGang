@@ -1,19 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from 'yup'
 import { FirebaseContext } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
+import FileUploader from 'react-firebase-file-uploader';
 
 const NuevoArticulo  = () => {
+
+//State para las imagenes
+const [subiendo, guardarSubiendo] = useState(false);
+const [progreso, guardadProgreso] = useState(0);
+const [urlimagen, guardadUrliamgen] = useState('');
+
 //Context con las operaciones de firebase
 const { firebase } = useContext(FirebaseContext)
-    // console.log(firebase); para visualizar si se hizo correctamente en la consola del navegador
+/* 
+    console.log(firebase); para visualizar si se hizo correctamente en la consola del navegador
+*/
 
 //Hook para redireccionar
 const navigate = useNavigate();
 
 //Validación y leer datos del formulario
-
 const formik = useFormik ({
     initialValues:{
         nombre: '',
@@ -38,14 +46,46 @@ const formik = useFormik ({
     onSubmit: articulos => {
         try {
             articulos.existencia = true;
-            firebase.db.collection('productos').add(articulos);
+            //Agregar url como parte del articulo
+            articulos.imagen = urlimagen;
+
+            firebase.db.collection('Articulos').add(articulos);
             // en caso de que agregue correctamente vamos a redireccionar
             navigate('/Tienda')
         } catch (error) {
             console.log(error);
         }
     }
-})
+});
+
+//Todo sobre las imagenes (Para subir img)
+const handleUploadStart = () => {
+    guardadProgreso(0);
+    guardarSubiendo(true);
+}
+const handleUploadError = error => {
+    guardarSubiendo(false);
+    console.log(error)
+}
+const handleUploadSuccess = async nombre => {
+    guardadProgreso(100);
+    guardarSubiendo(false);
+
+    //Almacenar la url de destino
+    const url = await firebase
+            .storage
+            .ref("productos")
+            .child(nombre)
+            .getDownloadURL();
+
+        console.log(url);
+        guardadUrliamgen(url);
+}
+const handleProgress = progreso => {
+    guardadProgreso(progreso);
+    console.log(progreso);
+}
+
 
     return(
         <>
@@ -97,10 +137,10 @@ const formik = useFormik ({
 
 
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="">Categoria</label>
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categoria">Categoria</label>
                             <select
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="precio"
+                                id="categoria"
                                 name="categoria"
                                 value={formik.values.categoria}
                                 onChange={formik.handleChange}
@@ -127,13 +167,16 @@ const formik = useFormik ({
 
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="imagen">Imagen</label>
-                            <input 
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <FileUploader 
+                                accept="image/*"
                                 id="imagen"
-                                type="file"
-                                value={formik.values.imagen}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
+                                name="imagen"
+                                randomizeFilename
+                                storageRef={firebase.storage.ref("Productos-Imagenes")}
+                                onUploadStart={handleUploadStart}
+                                onUploadError={handleUploadError}
+                                onUploadSuccess={handleUploadSuccess}
+                                onProgress={handleProgress}
                             />
                     </div>
                     <div className="mb-4">
