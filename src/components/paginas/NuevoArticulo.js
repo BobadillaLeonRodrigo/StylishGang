@@ -74,7 +74,7 @@ const handleUploadSuccess = async nombre => {
     //Almacenar la url de destino
     const url = await firebase
             .storage
-            .ref("productos")
+            .ref("Productos-Imagenes")
             .child(nombre)
             .getDownloadURL();
 
