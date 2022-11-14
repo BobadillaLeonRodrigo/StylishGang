@@ -10,7 +10,7 @@ const NuevoArticulo  = () => {
 //State para las imagenes
 const [subiendo, guardarSubiendo] = useState(false);
 const [progreso, guardadProgreso] = useState(0);
-const [urlimagen, guardadUrliamgen] = useState('');
+const [urlimagen, guardadUrlimagen] = useState('');
 
 //Context con las operaciones de firebase
 const { firebase } = useContext(FirebaseContext)
@@ -62,15 +62,16 @@ const formik = useFormik ({
 const handleUploadStart = () => {
     guardadProgreso(0);
     guardarSubiendo(true);
-}
+}       
 const handleUploadError = error => {
     guardarSubiendo(false);
     console.log(error)
 }
 const handleUploadSuccess = async nombre => {
     guardadProgreso(100);
-    guardarSubiendo(false);
-
+    setTimeout(() => {
+        guardarSubiendo(false);
+    }, 1000)
     //Almacenar la url de destino
     const url = await firebase
             .storage
@@ -79,7 +80,7 @@ const handleUploadSuccess = async nombre => {
             .getDownloadURL();
 
         console.log(url);
-        guardadUrliamgen(url);
+        guardadUrlimagen(url);
 }
 const handleProgress = progreso => {
     guardadProgreso(progreso);
@@ -147,14 +148,14 @@ const handleProgress = progreso => {
                                 onBlur={formik.handleBlur}
                             >
                                 <option value="">--Seleccione--</option>
-                                <option value="teclados">--Teclados--</option>
-                                <option value="monitores">--Monitores--</option>
-                                <option value="mouse">--Mouse--</option>
-                                <option value="targetaG">--Targeta Grafica--</option>
-                                <option value="ram">--Memoria RAM--</option>
-                                <option value="disco">--Discos Duros--</option>
-                                <option value="audifonos">--Audifonos--</option>
-                                <option value="videoj">--VideoJuegos--</option>
+                                <option value="Teclados">--Teclados--</option>
+                                <option value="Monitores">--Monitores--</option>
+                                <option value="Mouse">--Mouse--</option>
+                                <option value="Targeta-Graficas">--Targeta Grafica--</option>
+                                <option value="Memoria-Ram">--Memoria RAM--</option>
+                                <option value="Discos Duros">--Discos Duros--</option>
+                                <option value="Audifonos">--Audifonos--</option>
+                                <option value="Videojuegos">--VideoJuegos--</option>
                             </select>
                     </div>
                     { formik.touched.categoria && formik.errors.categoria ? (
@@ -179,6 +180,20 @@ const handleProgress = progreso => {
                                 onProgress={handleProgress}
                             />
                     </div>
+
+                            { subiendo && (
+                                <div className="h-12 relative w-full border">
+                                    <div className="absolute left-0 top-0 text-black px-2 text-sm h-12 flex items-center" style={{width: `${progreso}%` }}>
+                                        {progreso} %
+                                    </div>
+                                </div>
+                            ) }
+                            { urlimagen && (
+                                <p className="text-black p-3 text-center my-5">
+                                    La Imagen se subió correctamente
+                                </p>
+                            ) }
+
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descripcion">Descripción del Articulo</label>
                             <textarea 
